@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
-import { getConnectedAddressForUser } from "@/utils/fc";
-import { mintNft, balanceOf } from "@/utils/mint";
+import { getConnectedAddressForUser } from "../utils/facastAccount";
+import { mintNft, balanceOf } from "../utils/mint";
 import { PinataFDK } from "pinata-fdk";
 
 const fdk = new PinataFDK({
