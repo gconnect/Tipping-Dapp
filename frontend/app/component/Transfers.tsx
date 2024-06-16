@@ -39,7 +39,7 @@ const Transfers: React.FC<IInputProps> = (props) => {
   const [etherAmount, setEtherAmount] = useState<number>(0);
 
   const [erc1155, setErc1155] = useState<string>("");
-  const [erc1155Id, setErc1155Id] = useState<number>();
+  const [erc1155Id, setErc1155Id] = useState<number>(0);
   const [erc1155Amount, setErc1155Amount] = useState<number>();
   const [erc1155Ids, setErc1155Ids] = useState<number[]>([]);
   const [erc1155Amounts, setErc1155Amounts] = useState<number[]>([]);
@@ -293,7 +293,7 @@ const clear1155Batch = () => {
                       color="slategrey"
                       variant="outline"
                       placeholder="Amount"
-                      onChange={(e) => setErc1155Amount(String(e.target.value))}
+                      onChange={(e) => setErc1155Amount(Number(e.target.value))}
                       value={erc1155Amount}
                     />
 
@@ -302,7 +302,7 @@ const clear1155Batch = () => {
                     <Button
                       colorScheme="blue"
                       size="sm"
-                      onClick={() => transferErc1155SingleToPortal(rollups, provider, setLoadERC1155, erc1155, erc1155Id, erc1155Amount)}
+                      onClick={() => transferErc1155SingleToPortal(rollups, provider, setLoadERC1155, erc1155, erc1155Id, erc1155Amount!)}
                       disabled={!rollups}
                     > 
                       { loadERC1155 ? "Transferring please wait..🤑" : "Transfer"}
