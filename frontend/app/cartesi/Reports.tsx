@@ -37,7 +37,7 @@ export const Reports: React.FC = () => {
                         {/* <Th>Input Index</Th>
                         <Th>Notice Index</Th> */}
                         {/* <th>Input Payload</th> */}
-                        <Th className="text-slate-200">Reports <Button size='xs' onClick={() => reexecuteQuery({ requestPolicy: 'network-only' })}>
+                        <Th className="text-slate-200">Reports <Button size='xs' onClick={() => refetch({ requestPolicy: 'network-only' })}>
                              🔃 </Button>
                         </Th>
                     </Tr>
