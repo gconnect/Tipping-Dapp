@@ -2,6 +2,8 @@ import { hexToString } from "viem";
 import { AdvanceRoute, DefaultRoute, Router } from "cartesi-router";
 import { Wallet, Notice, Output, Error_out, Report } from "cartesi-wallet";
 import viem from "viem"
+import { CreateProfile } from "./creator-profile";
+import {  CreatorListRoute, CreateProfileRoute } from "./routes"
 import deployments from "./rollups.json";
 let rollup_address = "";
 const rollup_server: string = <string>process.env.ROLLUP_HTTP_SERVER_URL;
@@ -20,32 +22,11 @@ var handlers: any = {
   inspect_state: handle_inspect,
 };
 
-class CreateMessageRoute extends AdvanceRoute {
-  _parse_request(request: any) {
-    this.parse_request(request);
-    this.request_args["message"] = this.request_args["message"].toLowerCase();
-  }
-  public execute = (request: any) => {
-    try {
-      this._parse_request(request);
-      return this.request_args.message
-      // return new Notice(this.request_args.message) 
-    }catch(error: any) {
-      new  Error_out(error);
-    }
-  };
-}
-// class AddGreeting extends AdvanceRoute {
-//   execute = (request: any) => {
-//     this.parse_request(request)
-//     const user = this.msg_sender;
-//     if (user == undefined) {
-//       return new Error_out(`User with id:${user} not found`);
-//     }
-//     return new Notice(this.request_args.message);;
-//   };
-// }
-router.addRoute("greetings", new CreateMessageRoute())
+
+// const profile = new CreateProfile()
+
+// router.addRoute("add_creator", new CreateProfileRoute(profile))
+// router.addRoute("get_creators", new CreatorListRoute(profile))
 
 const send_request = async (output: Output | Set<Output>) => {
   if (output instanceof Output) {

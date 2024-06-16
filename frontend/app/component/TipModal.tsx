@@ -12,6 +12,10 @@ export const TipModal = ({ isOpen, onClose }: Props) => {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => setInput(e.target.value)
 
+  const sendTip = () => {
+
+  }
+  
   return (
     <>
       <Modal  isOpen={isOpen} size={"xl"} onClose={onClose} isCentered>
@@ -24,7 +28,7 @@ export const TipModal = ({ isOpen, onClose }: Props) => {
             <Textarea borderColor="blue.700" className='mt-2' placeholder='Short thank you note optional' type='text' value={input} onChange={handleInputChange} />
           </ModalBody>
           <ModalFooter className="bg-blue-200 rounded-b">
-            <Button className="full" colorScheme='blue' mr={3} onClick={onClose}>
+            <Button className="full" colorScheme='blue' mr={3} onClick={sendTip}>
               Send Tip
             </Button>
           </ModalFooter>

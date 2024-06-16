@@ -119,7 +119,7 @@ export const depositErc20ToPortal = async (rollups: RollupsContracts | undefined
         token,
         DAPP_ADDRESS,
         ethers.parseEther(`${amount}`),
-        data
+        "0x"
       );
       const transReceipt = await deposit.wait(1);
       setLoadERC20(false)
