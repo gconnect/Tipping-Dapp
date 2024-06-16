@@ -22,7 +22,7 @@ export async function mintNft(toAddress: string) {
     const { request }: any = await publicClient.simulateContract({
       account,
       address: contractAddress,
-      abi: contractAbi.output.abi,
+      abi: contractAbi.contracts.ERC20Portal.abi,
       functionName: "mint",
       args: [toAddress, 0, 1, `0x`],
     });
