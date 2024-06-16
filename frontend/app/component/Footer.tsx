@@ -1,3 +1,4 @@
+"use client"
 import Link from "next/link"
 import FooterItems from "./FooterItems"
 import devkit from "../../public/images/CartDevKit.png";

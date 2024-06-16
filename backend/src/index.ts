@@ -23,10 +23,10 @@ var handlers: any = {
 };
 
 
-// const profile = new CreateProfile()
+const profile = new CreateProfile()
 
-// router.addRoute("add_creator", new CreateProfileRoute(profile))
-// router.addRoute("get_creators", new CreatorListRoute(profile))
+router.addRoute("add_creator", new CreateProfileRoute(profile))
+router.addRoute("get_creators", new CreatorListRoute(profile))
 
 const send_request = async (output: Output | Set<Output>) => {
   if (output instanceof Output) {

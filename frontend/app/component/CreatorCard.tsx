@@ -1,3 +1,4 @@
+"use client"
 import { Card, CardHeader, 
 CardBody, CardFooter, Heading, useDisclosure, Box, Button, Flex, Text,Avatar, IconButton } from '@chakra-ui/react'
 import Image from 'next/image'

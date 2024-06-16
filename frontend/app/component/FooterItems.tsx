@@ -1,5 +1,4 @@
-import Link from "next/link"
-
+"use client"
 type FooterProps = {
   title: string,
   content?: string,
