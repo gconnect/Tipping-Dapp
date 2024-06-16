@@ -10,6 +10,9 @@ const nextConfig = {
     config.externals.push('pino-pretty', 'lokijs', 'encoding');
     return config;
   },
+  images: {
+    domains: ['images.unsplash.com'],
+  },
 };
 
 export default nextConfig;

@@ -1,15 +1,14 @@
 'use client'
 import {useState, useEffect } from 'react'
 import { useAccount } from 'wagmi'
-import { useEthersSigner } from '../utils/useEtherSigner'
+import { useEthersSigner } from '../../utils/useEtherSigner'
 import { DAPP_ADDRESS } from '@/app/utils/constants'
 import { Box } from '@chakra-ui/react'
-import { useRollups } from '../cartesi/hooks/useRollups'
+import { useRollups } from '../../cartesi/hooks/useRollups'
 import toast from 'react-hot-toast'
-import { useNotices } from '../cartesi/hooks/useNotices'
-import { Notices } from '../cartesi/Notices'
-import { ethers } from 'ethers'
-import { addInput } from '../cartesi/Portals'
+import { useNotices } from '../../cartesi/hooks/useNotices'
+import { Notices } from '../../cartesi/Notices'
+import { addInput } from '../../cartesi/Portals'
 
 export default function Greetings() {
   const [greeting, setGreeting] = useState('')
