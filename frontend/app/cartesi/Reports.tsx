@@ -22,7 +22,7 @@ export const Reports: React.FC = () => {
 
     useEffect(() => {
         refetch({ requestPolicy: 'network-only' });
-    }, []);
+    }, [refetch]);
     
     if (loading) return <p className="text-slate-400">Loading...</p>;
     if (error) return <p className="text-slate-400">Oh no... {error.message}</p>;
