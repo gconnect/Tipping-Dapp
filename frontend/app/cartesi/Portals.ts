@@ -1,4 +1,4 @@
-import { ethers, JsonRpcApiProvider, JsonRpcSigner, parseEther, Provider } from "ethers";
+import { ethers, JsonRpcApiProvider, parseEther, toBigInt } from "ethers";
 import { RollupsContracts } from "../cartesi/hooks/useRollups";
 import {
   IERC1155__factory,
