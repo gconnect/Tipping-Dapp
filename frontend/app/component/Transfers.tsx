@@ -61,10 +61,10 @@ const Transfers: React.FC<IInputProps> = (props) => {
   }
   const addTo1155Batch = () => {
     const newIds = erc1155Ids;
-    newIds.push(erc1155Id);
+    newIds.push(Number(erc1155Id));
     setErc1155Ids(newIds);
     const newAmounts = erc1155Amounts;
-    newAmounts.push(erc1155Amount);
+    newAmounts.push(Number(erc1155Amount));
     setErc1155Amounts(newAmounts);
     setErc1155IdsStr("["+erc1155Ids.join(',')+"]");
     setErc1155AmountsStr("["+erc1155Amounts.join(',')+"]");
