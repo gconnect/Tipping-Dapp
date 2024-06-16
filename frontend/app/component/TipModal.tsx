@@ -12,6 +12,7 @@ export const TipModal = ({ isOpen, onClose }: Props) => {
   const [input, setInput] = useState('')
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => setInput(e.target.value)
+  const handleCommentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => setInput(e.target.value)
 
   const sendTip = () => {
 
@@ -26,7 +27,7 @@ export const TipModal = ({ isOpen, onClose }: Props) => {
           <ModalCloseButton />
           <ModalBody className="bg-blue-200 ">
             <Input borderColor="blue.700" className='mt-2' placeholder='Amount' type='text' value={input} onChange={handleInputChange} />
-            <Textarea borderColor="blue.700" className='mt-2' placeholder='Short thank you note optional' type='text' value={input} onChange={handleInputChange} />
+            <Textarea borderColor="blue.700" className='mt-2' placeholder='Short thank you note optional'  value={input} onChange={handleCommentChange} />
           </ModalBody>
           <ModalFooter className="bg-blue-200 rounded-b">
             <Button className="full" colorScheme='blue' mr={3} onClick={sendTip}>
