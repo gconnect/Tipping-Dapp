@@ -9,18 +9,19 @@ import { errorAlert, successAlert } from '@/app/utils/customAlert';
 
 const config: any = configFile;
 
-interface Report {
+export interface Report {
   payload: string;
 }
 
 export const useInspectCall = () => {
   const { chain } = useAccount();
   const [inspectData, setInspectData] = useState<string>("");
+  const [responseData, setResponse] = useState<Response>()
   const [reports, setReports] = useState<string[]>([]);
   const [metadata, setMetadata] = useState<any>({});
   const [hexData, setHexData] = useState<boolean>(false);
   const [postData, setPostData] = useState<boolean>(false);
-  const [decodedReports, setDecodedReports] = useState<any>({});
+  const [decodedReports, setDecodedReports] = useState<any>([]);
 
   const inspectCall = async (payload: string) => {
     try {
@@ -48,6 +49,8 @@ export const useInspectCall = () => {
         response = await fetch(apiURL, { method: 'POST', body: payloadBlob });
       } else {
         response = await fetch(`${apiURL}/${payload}`);
+        setResponse(response)
+        return response
       }
 
       const data = await response.json();
@@ -65,6 +68,7 @@ export const useInspectCall = () => {
       
       setDecodedReports(reportData);
       successAlert("Successfully fetched")
+      return reportData
     } catch (error: any) {      
       console.error("Error fetching inspect data:", error)
       errorAlert(error)
@@ -81,6 +85,7 @@ export const useInspectCall = () => {
     setPostData,
     postData,
     decodedReports,
+    responseData,
     inspectCall,
   };
 };

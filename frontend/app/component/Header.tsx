@@ -20,13 +20,13 @@ const Header: React.FC = () => {
       <div className="flex items-center text-light-purple text-lg">
         <div className="hidden md:flex">
           <Link href={"/#about"}>
-            <p className="mx-2 my-4 hover:text-purple-300 ">About |</p>
+            <p className="mx-2 my-4 hover:text-purple-300 ">About </p>
           </Link>
           <Link href={"/#creators"}>
-            <p className="mx-2 my-4 hover:text-purple-300">Featured Creators |</p>
+            <p className="mx-2 my-4 hover:text-purple-300">Featured Creators </p>
           </Link>
           <Link href={"/pages/CreatorForm"}>
-            <p className="mx-2 my-4 hover:text-purple-300 ">Create Account |</p>
+            <p className="mx-2 my-4 hover:text-purple-300 ">Create Account </p>
           </Link>
           <Link href={"/pages/Profile"}>
             <p className="mx-2 my-4 hover:text-purple-300 ">Profile</p>

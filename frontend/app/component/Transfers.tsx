@@ -130,8 +130,8 @@ const clear1155Batch = () => {
                     <Button
                       colorScheme="blue"
                       size="sm"
-                      onClick={() => {
-                        depositEtherToPortal(rollups, provider, setLoadEther, etherAmount);
+                      onClick={async () => {
+                        await depositEtherToPortal(rollups, provider, setLoadEther, etherAmount);
                       }}
                       disabled={!rollups}
                     > {loadEther ? "Depositing please wait..🤑" :"Deposit"}
@@ -182,7 +182,12 @@ const clear1155Batch = () => {
                     <Button
                     colorScheme="blue"
                     size="sm"
-                    onClick={() => depositErc20ToPortal(rollups,provider, setLoadERC20, erc20Token, erc20Amount)}
+                    onClick={async () => {
+                      setLoadERC20(true)
+                      await depositErc20ToPortal(rollups,provider, erc20Token, erc20Amount)
+                      setLoadERC20(false)
+                    }
+                    }
                     >
                    {loadERC20 ? "Depositing please wait..🤑" : "Deposit"}
                     </Button>

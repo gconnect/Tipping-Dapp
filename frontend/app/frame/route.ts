@@ -4,23 +4,39 @@ import { mintNft, balanceOf } from "../utils/mint";
 import { PinataFDK } from "pinata-fdk";
 
 const fdk = new PinataFDK({
-  pinata_jwt: process.env.PINATA_JWT as string,
-  pinata_gateway: process.env.GATEWAY_URL as string,
+  pinata_jwt: process.env.NEXT_PUBLIC_PINATA_JWT as string,
+  pinata_gateway: process.env.NEXT_PUBLIC_GATEWAY_URL as string,
 });
 
 export async function GET(req: NextRequest, res: NextResponse) {
   try {
     const frameMetadata = await fdk.getFrameMetadata({
-      post_url: `${process.env.BASE_URL}/frame`,
+      post_url: `${process.env.NEXT_PUBLIC_BASE_URL}/frame`,
       buttons: [{ label: "Mint NFT", action: "post" }],
-      aspect_ratio: "1:1",
-      cid: "QmSYN7KT847Nado3fxFafYZgG6NXTMZwbaMvU9jhu5nPmJ",
+      aspect_ratio: "1.91:1",
+      cid: "QmeDuMkGzf22nujgMi5mzUT2QAYSF9FPYqeiVui7Xw6wcd",
     });
     return new NextResponse(frameMetadata);
   } catch (error) {
     console.log(error);
     return NextResponse.json({ error: error });
   }
+
+  // const frameMetadata = fdk.getFrameMetadata({
+  //   post_url: `<YOUR_DOMAIN>/api/test`,
+  //   input: {text: "Hello, world!"},
+  //   aspect_ratio: "1.91:1",
+  //   buttons: [
+  //     { label: 'Post', action: 'post'},
+  //     { label: 'Post Redirect', action: "post_redirect"},
+  //     { label: 'Mint', action: "mint" },
+  //     { label: 'Link', action: "link", target: "https://google.com"},
+  //     // { label: 'Send Tip', action: "tx" },
+  //   ],
+  //   cid: "QmTQBdzR67RPkz1UQnF7S2fy9fHYeXf8J88BUsojj5YXah", 
+  //   state: {counter: 1}
+  // });
+  // return new NextResponse(frameMetadata);
 }
 
 export async function POST(req: NextRequest, res: NextResponse) {
@@ -34,10 +50,10 @@ export async function POST(req: NextRequest, res: NextResponse) {
       const mint = await mintNft(address);
       console.log(mint);
       const frameMetadata = await fdk.getFrameMetadata({
-        post_url: `${process.env.BASE_URL}/redirect`,
+        post_url: `${process.env.NEXT_PUBLIC_BASE_URL}/redirect`,
         buttons: [{ label: "Learn How to Make This", action: "post_redirect" }],
         aspect_ratio: "1:1",
-        cid: "QmUx3kQH4vR2t7mTmW3jHJgJgJGxjoBsMxt6z1fkZEHyHJ",
+        cid: "QmeDuMkGzf22nujgMi5mzUT2QAYSF9FPYqeiVui7Xw6wcd",
       });
       return new NextResponse(frameMetadata);
     } catch (error) {
@@ -46,10 +62,10 @@ export async function POST(req: NextRequest, res: NextResponse) {
     }
   } else {
     const frameMetadata = await fdk.getFrameMetadata({
-      post_url: `${process.env.BASE_URL}/redirect`,
+      post_url: `${process.env.NEXT_PUBLIC_BASE_URL}/redirect`,
       buttons: [{ label: "Learn How to Make This", action: "post_redirect" }],
       aspect_ratio: "1:1",
-      cid: "QmaaEbtsetwamJwfFPAQAFC6FAE1xeYsvF7EBKA8NYMjP2",
+      cid: "QmeDuMkGzf22nujgMi5mzUT2QAYSF9FPYqeiVui7Xw6wcd",
     });
     return new NextResponse(frameMetadata);
   }

@@ -1,4 +1,4 @@
-import { ethers, JsonRpcApiProvider, parseEther, toBigInt } from "ethers";
+import { ethers, JsonRpcApiProvider, parseEther, toBigInt, toBeHex, BytesLike, toUtf8Bytes } from "ethers";
 import { RollupsContracts } from "../cartesi/hooks/useRollups";
 import {
   IERC1155__factory,
@@ -7,6 +7,7 @@ import {
 } from "../cartesi/generated/rollups";
 import { successAlert, errorAlert } from "../utils/customAlert";
 import { DAPP_ADDRESS } from "../utils/constants";
+import { Hex } from "viem";
 
 export const sendAddress = async (rollups: RollupsContracts | undefined, setDappRelayedAddress: Function) => {
   if (rollups) {
@@ -25,22 +26,17 @@ export const sendAddress = async (rollups: RollupsContracts | undefined, setDapp
 
 export const addInput = async (
   rollups: RollupsContracts | undefined, 
-  setLoading: Function,
   jsonPayload: string
  ) => {
   if (rollups) {
       try {
-        setLoading(true)
-        const data = JSON.stringify(jsonPayload);
-        let payload = ethers.toUtf8Bytes(data);
+        let payload = ethers.toUtf8Bytes(jsonPayload);
         const tx = await rollups.inputContract.addInput(DAPP_ADDRESS, payload);
         const receipt = await tx?.wait()
-        setLoading(false)
         successAlert(receipt?.hash)
         console.log(receipt?.hash)
         return receipt?.hash
       } catch (e) {
-        setLoading(false)
         errorAlert(e)
         console.log(`${e}`);
       }
@@ -74,21 +70,20 @@ export const depositEtherToPortal = async (rollups: RollupsContracts | undefined
 };
 
 export const depositErc20ToPortal = async (rollups: RollupsContracts | undefined, 
-  provider: JsonRpcApiProvider | undefined, setLoadERC20: Function, 
+  provider: JsonRpcApiProvider | undefined,
   token: string, amount: number) => {
   try {
     if (rollups && provider) {
-      setLoadERC20(true)
       const data = ethers.toUtf8Bytes(
         `Deposited (${amount}) of ERC20 (${token}).`
       );
-      const signer = await provider.getSigner();
-      const signerAddress = await signer?.getAddress();
+      const signer =  await provider.getSigner();
+      const signerAddress = (await signer).address;
 
-      const erc20PortalAddress = await rollups.erc20PortalContract.getAddress();
+      const erc20PortalAddress =  await rollups.erc20PortalContract.getAddress();
       const tokenContract = signer
         ? IERC20__factory.connect(token, signer)
-        : IERC20__factory.connect(token, signer!);
+        : IERC20__factory.connect(token, provider);
 
       // query current allowance
       const currentAllowance = await tokenContract.allowance(
@@ -119,19 +114,77 @@ export const depositErc20ToPortal = async (rollups: RollupsContracts | undefined
         token,
         DAPP_ADDRESS,
         ethers.parseEther(`${amount}`),
-        "0x"
+        data
       );
-      const transReceipt = await deposit.wait(1);
-      setLoadERC20(false)
-      successAlert(transReceipt!.hash)
-      return transReceipt?.hash
+      // const transReceipt = await deposit.wait(1);
+      // successAlert(transReceipt!.hash)
+      successAlert("Transaction successful")
+      return deposit
     }
   } catch (e) {
-    setLoadERC20(false)
-    console.log(`${e}`);
-    errorAlert(e)
+    console.log(`Error occured ${e}`);
+    errorAlert(`Error occured ${e}`)
   }
-};
+
+//   if (rollups && provider) {
+    
+//     const data = toUtf8Bytes(
+//       `Deposited (${amount}) of ERC20 (${token}).`
+//     );
+//     //const data = `Deposited ${args.amount} tokens (${args.token}) for DAppERC20Portal(${portalAddress}) (signer: ${address})`;
+//     const signer = await provider.getSigner();
+//     const signerAddress = await signer.getAddress()
+    
+//     const erc20PortalAddress = await rollups.erc20PortalContract.getAddress();
+//     const tokenContract = signer
+//     ? IERC20__factory.connect(token, signer)
+//     : IERC20__factory.connect(token, provider);
+    
+//     // query current allowance
+//     const currentAllowance = await tokenContract.allowance(
+//       signerAddress.toLowerCase(),
+//       erc20PortalAddress.toLowerCase()
+//       );
+ 
+//     // if (true) {
+//     if (parseEther(`${amount}`) > currentAllowance) {
+
+//       console.log('amount ', parseEther(`${amount}`))
+//       // Allow portal to withdraw `amount` tokens from signer
+//       try {
+//         const tx = await tokenContract.approve(
+//           erc20PortalAddress,
+//           parseEther(`${amount}`)
+//         );
+//         const receipt = await tx.wait(1);
+//       const event = (
+//         await tokenContract.queryFilter(
+//           tokenContract.filters.Approval(),
+//           receipt?.blockHash
+//         )
+//       ).pop();
+//       if (!event) {
+//         throw Error(
+//           `could not approve ${amount} tokens for DAppERC20Portal(${erc20PortalAddress})  (signer: ${signerAddress}, tx: ${tx.hash})`
+//         );
+//       }
+//       } catch (error) {
+//         console.log('error from transfering ', error)
+//       }
+    
+//     }
+
+//     return await rollups.erc20PortalContract.depositERC20Tokens(
+//       token,
+//       DAPP_ADDRESS,
+//       parseEther(`${amount}`),
+//       data
+//     );
+//   }
+// } catch (e) {
+//   console.log(`${e}`);
+// }
+ };
 
 export const withdrawEther = async (rollups: RollupsContracts | undefined, 
   provider: JsonRpcApiProvider | undefined, setLoadWithdrawEther: Function, amount: number) => {
@@ -219,6 +272,41 @@ export const withdrawErc721 = async (rollups: RollupsContracts | undefined,
     console.log(e);
     errorAlert(e)
   }
+};
+
+export const transferErc20 = async (rollups: RollupsContracts | undefined, 
+  provider: JsonRpcApiProvider | undefined,
+  sender: `0x${string}`| undefined, 
+  to: `0x${string}`| undefined,
+  erc20token: string,
+  amount: number, 
+  ) => {
+  try {
+  if (rollups && provider) {
+    let erc20_amount = parseEther(String(amount)).toString();
+    console.log("erc20 after parsing: ", erc20_amount);
+
+    // account: Address, to: Address, erc20: Address, amount: bigint
+    const input_obj = {
+      method: "erc20_transfer",
+      args: {
+        account: sender,
+        to: to,
+        erc20: erc20token,
+        amount: erc20_amount,
+      },
+    };
+    const data = JSON.stringify(input_obj);
+    let payload = ethers.toUtf8Bytes(data);
+    const tx =  await rollups.inputContract.addInput(DAPP_ADDRESS, payload);
+    const receipt = await tx.wait(1)
+    successAlert(receipt?.hash)
+    return receipt?.hash
+  }
+} catch (e) {
+  console.log(e);
+  errorAlert(e)
+}
 };
 
 export const transferNftToPortal = async (

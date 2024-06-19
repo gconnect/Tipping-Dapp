@@ -1,35 +1,54 @@
 "use client"
 import { Card, CardHeader, 
 CardBody, CardFooter, Heading, useDisclosure, Box, Button, Flex, Text,Avatar, IconButton } from '@chakra-ui/react'
-import Image from 'next/image'
 import React from 'react'
 import { TipModal } from './TipModal'
+import { truncate } from '../utils/truncate'
 
-export const CreatorCard = () => {
+interface Props {
+  username: string
+  fullname: string
+  creatorAddress: string
+  bio: string
+  profession: string
+  profilePix: string,
+  earnings: number
+  contributionCount: number
+}
+export const CreatorCard = ({ 
+  username, fullname, creatorAddress, 
+  bio, profession, profilePix, earnings, contributionCount } : Props) => {
   const { isOpen, onOpen, onClose } = useDisclosure()
 
   return (
     <div className='m-2'>
-      <Card maxW='md'>
+      <Card maxW='md' className=''>
         <CardHeader  className='bg-purple-200 rounded-t'>
           <Flex>
             <Flex flex='1' gap='4' alignItems='center' flexWrap='wrap'>
-              <Avatar name='Segun Adebayo' src='https://bit.ly/sage-adebayo' />
+              <Avatar name={username} src={profilePix} />
               <Box>
-                <Heading size='sm'>Justin Obi</Heading>
-                <Text size={'sm'}>Blockchain Engineer</Text>
+                <Heading size='sm'>{ bio }</Heading>
+                <Text fontWeight={"bold"} size={'sm'}>{username}</Text>
+                <Text>{creatorAddress && truncate(creatorAddress) }</Text>
               </Box>
             </Flex>
           </Flex>
         </CardHeader>
         <CardBody  className='bg-purple-200'>
           <Text>
-            I am passionate about building solutions. And more so blockchain dapps. Proficient in both backend and frontend technologies.
+            {profession}
           </Text>
+          <div className='flex justify-between mt-4'>
+              <p className='text-sm'>{`💰 ${earnings} Received`}</p> 
+              <p className='text-sm'>{`♻  ${contributionCount} Supports`}</p> 
+            </div>
         </CardBody>
           <CardFooter  className='bg-purple-200 rounded-b'>
-          <Button onClick={onOpen} colorScheme='purple' className='w-full'>Send Tip</Button>
-          <TipModal isOpen={isOpen} onClose={onClose}/>
+          
+            <Button onClick={onOpen} colorScheme='purple' className='w-full'>Send Tip</Button>
+            <TipModal isOpen={isOpen} onClose={onClose}/>
+  
       </CardFooter>
     </Card>
     </div>
