@@ -34,8 +34,10 @@ export default function Greetings() {
 
     if(!isConnected) return toast("Please connect your wallet")
     if(!greeting) return toast.error("Input field should not be empty")
-  
-    await addInput(rollups, setLoading, jsonPayload)
+      setLoading(true)
+    await addInput(rollups, jsonPayload)
+    setLoading(false)
+
     setGreeting("")
   };
 

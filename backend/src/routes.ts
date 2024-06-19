@@ -50,11 +50,6 @@ class SendTipRoute extends CreateAdvanceProfile {
     this._parse_request(request);
     try{
       console.log("request.metadata.msg_sender",request.metadata.msg_sender)
-    //  const er20transfer =  this.wallet.erc20_transfer(
-    //     `0x${this.msg_sender.toLowerCase()}`, 
-    //     this.request_args.to, 
-    //     this.request_args.token, 
-    //     BigInt(this.request_args.amount))
       const tip = this.profile.sendTip(
         request.metadata.msg_sender,
         // this.request_args.to,

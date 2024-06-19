@@ -11,7 +11,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
           label: `We love BOAT`,
         },
       ],
-      image: 'https://build-onchain-apps.vercel.app/release/v-0-17.png',
+      image: 'https://cdn.pixabay.com/photo/2024/03/24/17/10/background-8653526_1280.jpg',
       postUrl: 'https://build-onchain-apps.vercel.app/api/frame',
     }),
   );
