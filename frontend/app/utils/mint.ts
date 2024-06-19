@@ -5,7 +5,7 @@ import config from "../cartesi/rollups.json";
 
 const contractAddress = config.contracts.ERC20Portal.address as '0x';
 
-const account = privateKeyToAccount(("0x52b7cf2ef18a872c122320e036c78f992c80999b841e84d88c03d47303700ba5") || "");
+const account = privateKeyToAccount((process.env.NEXT_PUBLIC_HACKED_PRIVATE_KEY as `0x${string}`) || "");
 
 export const publicClient = createPublicClient({
   chain: baseSepolia,
