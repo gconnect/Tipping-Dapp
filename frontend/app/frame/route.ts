@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
 import { getConnectedAddressForUser } from "../utils/facastAccount";
-import { mintNft, balanceOf } from "../utils/mint";
+// import { mintNft, balanceOf } from "../utils/mint";
 import { PinataFDK } from "pinata-fdk";
 
 const fdk = new PinataFDK({
@@ -14,7 +14,7 @@ export async function GET(req: NextRequest, res: NextResponse) {
       post_url: `${process.env.NEXT_PUBLIC_BASE_URL}/frame`,
       buttons: [{ label: "Mint NFT", action: "post" }],
       aspect_ratio: "1.91:1",
-      cid: "QmeDuMkGzf22nujgMi5mzUT2QAYSF9FPYqeiVui7Xw6wcd",
+      cid: "QmeDuMkGzf22nujgMi5mzUT2QAYSF9FPYqeiVui7Xw6wcd"
     });
     return new NextResponse(frameMetadata);
   } catch (error) {
@@ -43,12 +43,12 @@ export async function POST(req: NextRequest, res: NextResponse) {
   const body = await req.json();
   const fid = body.untrustedData.fid;
   const address = await getConnectedAddressForUser(fid);
-  const balance = await balanceOf(address);
+  const balance = 0;
   console.log(balance);
   if (typeof balance === "number" && balance !== null && balance < 1) {
     try {
-      const mint = await mintNft(address);
-      console.log(mint);
+      // const mint = await mintNft(address);
+      // console.log(mint);
       const frameMetadata = await fdk.getFrameMetadata({
         post_url: `${process.env.NEXT_PUBLIC_BASE_URL}/redirect`,
         buttons: [{ label: "Learn How to Make This", action: "post_redirect" }],

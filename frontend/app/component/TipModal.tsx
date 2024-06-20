@@ -2,70 +2,66 @@
 import { useState } from "react"
 import { Button, Modal, ModalBody, ModalOverlay,Input,
    ModalHeader, ModalContent, ModalCloseButton, ModalFooter, 
-   Textarea} from "@chakra-ui/react"
-import { depositErc20ToPortal, addInput, transferErc20 } from "../cartesi/Portals"
-import { errorAlert } from "../utils/customAlert"
+   } from "@chakra-ui/react"
+import { errorAlert, successAlert } from "../utils/customAlert"
 import { DAPP_ADDRESS, TEST_TOKEN } from "../utils/constants"
 import { useRollups } from "../cartesi/hooks/useRollups"
 import { useEthersSigner } from "../utils/useEtherSigner"
-import { toBeHex } from "ethers"
 import { useAccount } from "wagmi"
+import { SendTip } from "../helpers/send_tip"
+import toast from "react-hot-toast"
+import { getERC20L2Balance } from "../helpers/getBalance"
+import { parseEther, toBigInt } from "ethers"
   interface Props {
+    creatorId: number
+    creatorWalletAddress: string
+    creatorUsername: string
     isOpen: boolean
     onClose: () => void
    }
-export const TipModal = ({ isOpen, onClose }: Props) => {
+
+export const TipModal = ({ isOpen, onClose, creatorId, creatorWalletAddress, creatorUsername }: Props) => {
   const [amount, setAmount] = useState("")
-  const [creatorAddress, setCreatorAddress] = useState("")
-  const [creatorId, setCreatorId] = useState(0)
   const [loading, setLoading] = useState(false)
-  const { address } = useAccount()
+  const { address, chain } = useAccount()
   const rollups = useRollups(DAPP_ADDRESS)
   const signer = useEthersSigner()
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => setAmount(e.target.value)
-  const handleWalletAddress = (e: React.ChangeEvent<HTMLInputElement>) => setCreatorAddress(e.target.value)
 
-  const to = "0x9965507D1a55bcC2695C58ba16FB37d819B0A4dc"
+  console.log(creatorId)
+  console.log(creatorWalletAddress)
 
-  const payload = {
-    "method": "send_tip",
-    "args": {
-      // "to": to,
-      "amount": amount,
-      "token": TEST_TOKEN,
-      "creatorId": 0,
-    }
-  }
-  const handleSendTip = async () => {
+  const handleSendtip = async () => {
     try{
-      const provider = signer?.provider
-      // if(!address) return errorAlert("Please connect your wallet")
-      if(!amount) return errorAlert("Field should be filled")
+      if(!amount) return errorAlert("Please enter an amount")
       setLoading(true)
-      await depositErc20ToPortal(rollups, provider, TEST_TOKEN, Number(amount))
-      // await transferErc20(rollups, provider, address, to, TEST_TOKEN,  Number(amount))
-      // await addInput(rollups, JSON.stringify(payload))
+      await SendTip(address!,creatorWalletAddress, TEST_TOKEN, Number(amount), creatorId, signer!,rollups!,chain!)
       setLoading(false)
+      // successAlert("Tip sent successfully")
     }catch(error){
-      setLoading(false)
-      console.log("error Ui", error)
+      console.log(error)
       errorAlert(error)
     }
   }
+
+  const checkBalance =async  () => {
+    await getERC20L2Balance(TEST_TOKEN, address!, chain!)
+  }
+
   
   return (
     <>
       <Modal  isOpen={isOpen} size={"xl"} onClose={onClose} isCentered>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader className="bg-blue-200 rounded-t ">Send Tip to gconnect</ModalHeader>
+          <ModalHeader className="bg-blue-200 rounded-t ">{`Send Tip to ${creatorUsername}`}</ModalHeader>
           <ModalCloseButton />
           <ModalBody className="bg-blue-200 ">
             <Input borderColor="blue.700" className='mt-2' placeholder='Amount' type='number' value={amount} onChange={handleAmountChange} />
-            <Input borderColor="blue.700" className='mt-2' disabled placeholder='Wallet Address' type="text" value={address} />
+            <Input borderColor="blue.700" className='mt-2' disabled placeholder='Wallet Address' type="text" value={creatorWalletAddress} />
           </ModalBody>
           <ModalFooter className="bg-blue-200 rounded-b">
-            <Button className="full" colorScheme='blue' mr={3} onClick={handleSendTip}>
+            <Button className="full" colorScheme='blue' mr={3} onClick={checkBalance}>
               {loading ? "Sending Please wait..." : "Send tip"}
             </Button>
           </ModalFooter>

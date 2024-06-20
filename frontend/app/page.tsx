@@ -11,28 +11,20 @@ import rollupAbi from "./cartesi/rollups.json"
 import { INSPECT_BASE_URL, DAPP_ADDRESS } from "./utils/constants"
 import { useQuery } from "@tanstack/react-query"
 import { Report } from "./cartesi/hooks/useReports"
+import { fetchCreators } from "./helpers/fetchCreators"
 
 const Home: React.FC = () => {
   const { address } = useAccount()
   const [creators, setCreators] = useState([])
 
-  const fetchCreators = async () => {
-    const result = await fetch(`${INSPECT_BASE_URL}/get_creators`);
-    if (!result.ok) {
-      throw new Error('Network response was not ok');
-    }
-    const data = await result.json()
-    const decode = data.reports.map((report: Report) => {
-      return ethers.toUtf8String(report.payload);
-    });
-    const reportData: any = JSON.parse(decode);
-    setCreators(reportData)
-    return reportData;
+  const getCreators = async () => {
+    const data = await fetchCreators()
+    setCreators(data)
   };
 
 
     useEffect(() => {
-      fetchCreators()
+      getCreators()
     },[])
 
     return(
@@ -45,9 +37,11 @@ const Home: React.FC = () => {
 
         {creators && creators.length > 0 && creators.map((item: any, index) => <div key={index}>
 
-          <CreatorCard username={item.username} 
+          <CreatorCard 
+          creatorId={item.id}
+          username={item.username} 
           fullname={item.fullname} 
-          creatorAddress={item.creatorAddress} 
+          creatorAddress={item.creatorAddress}
           bio={item.bio} 
           profession={item.profession} 
           profilePix={`https://brown-clinical-python-573.mypinata.cloud/ipfs/${item.profilePix}`} 

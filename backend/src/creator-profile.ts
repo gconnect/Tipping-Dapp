@@ -102,7 +102,7 @@ class CreateProfile {
         // increment the supporter count 
         supporters +=1
         let tip_json = JSON.stringify(data);
-        router.process("erc20_transfer", tip_json);
+        // router.process("erc20_transfer", tip_json);
         const notice_payload = `{{"type":"send_tip","content":${tip_json}}}`;
         return new Notice(notice_payload);
       }catch(error){

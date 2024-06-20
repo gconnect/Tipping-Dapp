@@ -6,6 +6,7 @@ import { TipModal } from './TipModal'
 import { truncate } from '../utils/truncate'
 
 interface Props {
+  creatorId: number
   username: string
   fullname: string
   creatorAddress: string
@@ -17,7 +18,7 @@ interface Props {
 }
 export const CreatorCard = ({ 
   username, fullname, creatorAddress, 
-  bio, profession, profilePix, earnings, contributionCount } : Props) => {
+  bio, profession, profilePix, earnings, contributionCount, creatorId } : Props) => {
   const { isOpen, onOpen, onClose } = useDisclosure()
 
   return (
@@ -47,7 +48,7 @@ export const CreatorCard = ({
           <CardFooter  className='bg-purple-200 rounded-b'>
           
             <Button onClick={onOpen} colorScheme='purple' className='w-full'>Send Tip</Button>
-            <TipModal isOpen={isOpen} onClose={onClose}/>
+            <TipModal isOpen={isOpen} onClose={onClose} creatorId={creatorId} creatorWalletAddress={creatorAddress} creatorUsername={username}/>
   
       </CardFooter>
     </Card>
