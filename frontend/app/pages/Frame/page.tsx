@@ -3,7 +3,7 @@ import { Basic } from 'next/font/google'
 
 import { FrameMetadata } from '@coinbase/onchainkit/frame';
  
-export default function HomePage() {
+export default function Frame() {
   return (
     <FrameMetadata
       buttons={[

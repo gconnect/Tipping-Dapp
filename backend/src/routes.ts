@@ -40,25 +40,41 @@ class CreateProfileRoute extends CreateAdvanceProfile {
 class SendTipRoute extends CreateAdvanceProfile {
   _parse_request(request: any) {
     this.parse_request(request);
-    // this.request_args["amount"] = this.request_args["amount"].toLowerCase();
-    this.request_args["creatorId"] = this.request_args["creatorId"];
-    // this.request_args["sender"] = this.request_args["sender"].toLowerCase();
     this.request_args["token"] = this.request_args["token"].toLowerCase();
-    // this.request_args["to"] = this.request_args["to"].toLowerCase()
   }
   public execute = (request: any) => {
     this._parse_request(request);
     try{
       console.log("request.metadata.msg_sender",request.metadata.msg_sender)
-      const tip = this.profile.sendTip(
+      return this.profile.sendTip(
         request.metadata.msg_sender,
-        // this.request_args.to,
         this.request_args.amount,
         this.request_args.token,
         parseInt(this.request_args.creatorId),
       )    
-      // console.log(tip)
-      return tip
+    }catch(error){
+      const error_msg = `Failed to create message ${error}`;
+      console.debug(error_msg);
+      return new Error_out(error_msg);
+    }
+  };
+}
+
+class WithdrawTipRoute extends CreateAdvanceProfile {
+  _parse_request(request: any) {
+    this.parse_request(request);
+    this.request_args["token"] = this.request_args["token"].toLowerCase();
+  }
+  public execute = (request: any) => {
+    this._parse_request(request);
+    try{
+      console.log("request.metadata.msg_sender",request.metadata.msg_sender)
+      return this.profile.withdrawTip(
+        request.metadata.msg_sender,
+        this.request_args.amount,
+        this.request_args.token,
+        parseInt(this.request_args.creatorId),
+      )    
     }catch(error){
       const error_msg = `Failed to create message ${error}`;
       console.debug(error_msg);
@@ -87,4 +103,4 @@ class CreatorRoute extends InspectRoute {
   };
 }
 
-export { CreatorListRoute, CreateProfileRoute, CreatorRoute, SendTipRoute }
+export { CreatorListRoute, CreateProfileRoute, CreatorRoute, SendTipRoute, WithdrawTipRoute }

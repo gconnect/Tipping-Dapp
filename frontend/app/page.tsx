@@ -53,7 +53,7 @@ const Home: React.FC = () => {
           bio={item.bio} 
           profession={item.profession} 
           profilePix={`https://gateway.pinata.cloud/ipfs/${item.profilePix}`} 
-          earnings={item.earnings} 
+          earnings={item.earnings/1e18} 
           contributionCount={item.contributionCount}
            />
 

@@ -122,31 +122,32 @@ class CreateProfile {
             BigInt(amount.toString())
            )
         }catch(error){
-          return new Error_out(`unable to buy a sword ${error}`);
+          return new Error_out(`unable to send tip ${error}`);
         }
         if (output.type === "error") {
           return new Error_out(output.payload);
         }  
         outputs.add(output)
-        // const obj = {
-        //   sender, toAddress, token, amount
-        // }
+
         let creator = this.creators[creatorId]
         let creatorBalance = creator?.getCreatorEarnings()
         let supporters = creator?.getContributorCount()
+        
+        if (creatorBalance == undefined) {
+          return new Error_out(`Creator balance undefined`);
+        }
+        if (supporters == undefined) {
+          return new Error_out(`Creator balance undefined`);
+        }
          // increment the creator balance 
-        creator?.setCreatorEarnings(creatorBalance! += Number(amount))
+        creator?.setCreatorEarnings(creatorBalance += Number(amount))
         // increment the supporter count 
-        creator?.setContributorCount(supporters! += 1)
+        creator?.setContributorCount(supporters += 1)
 
         //get updated balance and count
         let updatedBalance = creator?.getCreatorEarnings() 
         let updatedCount = creator?.getContributorCount()
 
-        // let tip_json = JSON.stringify(obj);
-        // router.process("erc20_transfer", tip_json);
-        // const notice_payload = `{{"type":"send_tip","content":${tip_json}}}`;
-        // return new Notice(notice_payload);
         const tip_notice =  new Notice (`Creator balance increased to :
          ${updatedBalance} and contributor count increased to : ${updatedCount}`);
          outputs.add(tip_notice)
@@ -154,6 +155,47 @@ class CreateProfile {
       }catch(error){
         console.log(error)
         return new Error_out(`Unable to send tip ${error}`);
+      }
+    }
+
+    withdrawTip(sender: string, amount: BigInt, token: `0x${string}`, creatorId: number, ){
+      let outputs = new Set<Output>();
+      try{
+        // handle erc20 withdraw
+        let output: Output;
+        try{
+          output = wallet.erc20_withdraw(
+            getAddress(sender), 
+            getAddress(token), 
+            BigInt(amount.toString())
+           )
+        }catch(error){
+          return new Error_out(`unable to withdraw ${error}`);
+        }
+        if (output.type === "error") {
+          return new Error_out(output.payload);
+        }  
+        outputs.add(output)
+
+        let creator = this.creators[creatorId]
+        let creatorBalance = creator?.getCreatorEarnings()
+      
+         // increment the creator balance 
+         if (creatorBalance == undefined) {
+          return new Error_out(`Creator balance undefined`);
+        }
+        creator?.setCreatorEarnings(creatorBalance -= Number(amount))     
+
+        //get updated balance and count
+        let updatedBalance = creator?.getCreatorEarnings() 
+  
+        const tip_notice =  new Notice (`Creator balance reduced to :
+         ${updatedBalance}`);
+         outputs.add(tip_notice)
+         return outputs
+      }catch(error){
+        console.log(error)
+        return new Error_out(`Unable to withdraw tip ${error}`);
       }
     }
 

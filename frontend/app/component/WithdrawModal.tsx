@@ -135,7 +135,7 @@ export const WithdrawModal = ({ isOpen, onClose, creatorId, creatorWalletAddress
     try{
       if(!amount) return errorAlert("Please enter an amount")
       setLoading(true)
-      await withdrawERC20(address!, TEST_TOKEN, Number(amount),rollups!, chain!)
+      await withdrawERC20(address!, TEST_TOKEN, Number(amount), creatorId, rollups!, chain!)
       setLoading(false)
     }catch(error){
       setLoading(false)

@@ -6,14 +6,21 @@ import { getERC20L2Balance } from "./getBalance"
 import { errorAlert } from "../utils/customAlert"
 
   export const withdrawERC20 = async (sender: `0x${string}`, erc20: `0x${string}`, 
-    amount: number, rollups: RollupsContracts, chain: Chain) => {
+    amount: number, creatorId: number, rollups: RollupsContracts, chain: Chain) => {
     const payload = {
-      "method": "erc20_withdraw",
+
+      "method": "withdraw_tip",
       "args":{
-          "account": sender,
-          "erc20": erc20,
-          "amount": Number(parseUnits(amount.toString(), 18))
+          "token": erc20,
+          "amount": Number(parseUnits(amount.toString(), 18)),
+          "creatorId": creatorId
       },
+      // "method": "erc20_withdraw",
+      // "args":{
+      //     "account": sender,
+      //     "erc20": erc20,
+      //     "amount": Number(parseUnits(amount.toString(), 18))
+      // },
     }
     try{
       const erc20balance = await getERC20L2Balance(erc20, sender, chain)

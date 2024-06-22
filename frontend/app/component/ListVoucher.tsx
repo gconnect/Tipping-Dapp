@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import {
   Table,
   Thead,
@@ -14,7 +14,8 @@ import { finalWithraw } from '../helpers/excuteVoucher'
 import { useAccount } from 'wagmi'
 import { useRollups } from '../cartesi/hooks/useRollups'
 import { DAPP_ADDRESS } from '../utils/constants'
-import { errorAlert } from '../utils/customAlert'
+import { errorAlert, successAlert } from '../utils/customAlert'
+import { executeVoucher } from '../helpers/excuteVoucher'
 
 export const ListVoucher = () => {
   const [creatorVouchers,  setCreatorVouchers] = useState([])
@@ -24,24 +25,29 @@ export const ListVoucher = () => {
 
   const { address } = useAccount()
 
-  const getCreatorVouchers = async () => {
+  const getCreatorVouchers = useCallback(async () => {
     await finalWithraw(address!, rollups!,setCreatorVouchers )
-  }
+  },[address, rollups])
 
-  const isExecuted = async (inputIndex: number, index: number) => {
-    const voucherExecuted = await rollups?.dappContract.wasVoucherExecuted(
-      BigInt(inputIndex),
-      BigInt(index)
-    )
-    console.log("status", voucherExecuted)
-    return voucherExecuted
-  }
-  
+  // const isExecuted = async (inputIndex: number, index: number) => {
+  //   const voucherExecuted = await rollups?.dappContract.wasVoucherExecuted(
+  //     BigInt(inputIndex),
+  //     BigInt(index)
+  //   )
+  //   console.log("status", voucherExecuted)
+  //   return voucherExecuted
+  // }
+
   const handleExecuteVoucher = async () => {
     try{
       setExecuting(true)
       await finalWithraw(address!, rollups!, setCreatorVouchers)
+      // creatorVouchers.filter((voucher: any) => voucher.executed !== true).map((voucher:any, index) => 
+      //   executeVoucher(voucher.index, voucher.input.index, rollups!))
+   
+
       setExecuting(false)
+      // successAlert()
     }catch(error){
       setExecuting(false)
       console.log(error)
@@ -51,7 +57,7 @@ export const ListVoucher = () => {
 
   useEffect(() => {
     getCreatorVouchers() 
-  },[])
+  },[getCreatorVouchers])
 
   return (
   <TableContainer className='mt-16 text-slate-100'>
@@ -65,7 +71,7 @@ export const ListVoucher = () => {
       </Tr>
     </Thead>
     <Tbody>
-    {creatorVouchers && creatorVouchers.map( async (item: any, index) => 
+    {creatorVouchers && creatorVouchers.map((item: any, index) => 
        <Tr key={index}>
        <Td>{item.index}</Td>
        <Td>{item.input.index}</Td>

@@ -25,7 +25,7 @@ const Profile = () => {
   const { address,  chain } = useAccount()
 
   console.log("address", address)
-  const getCreators = async () => {
+  const getCreator =useCallback(async () => {
     const data = await fetchCreators()
     console.log(data)
     if(data){
@@ -37,23 +37,12 @@ const Profile = () => {
         }
       })
     }
-  }
-
-  const l2Balance = async () => {
-   const bal = await getERC20L2Balance(TEST_TOKEN, address!, chain!)
-   console.log("creatorAddress", creatorAddress)
-   if(bal === null){
-    setbalance(0)
-   }
-   console.log("balance", bal)
-   setbalance(bal)
-  }
+  },[address])
 
 
   useEffect(() => {
-    getCreators()
-    l2Balance()
-  },[])
+    getCreator()
+  },[getCreator])
 
   return (
     <div className='min-h-screen m-4'>
@@ -81,7 +70,7 @@ const Profile = () => {
           {creator.bio}
           </Text>
           <Text py='2' fontWeight={"bold"}>
-           {` Earninngs : ${balance ? balance/1e18 : '0'} TEST TOKEN`}
+           {` Earninngs : ${creator.earnings/1e18} TEST Token`}
           </Text>
           <Button onClick={onOpen} colorScheme='purple' className='w-full'>Withdraw</Button>
 

@@ -3,7 +3,7 @@ import { AdvanceRoute, DefaultRoute, Router } from "cartesi-router";
 import { Wallet, Notice, Output, Error_out, Report } from "cartesi-wallet";
 import viem from "viem"
 import { CreateProfile } from "./creator-profile";
-import {  CreatorListRoute, CreateProfileRoute, CreatorRoute, SendTipRoute } from "./routes"
+import {  CreatorListRoute, CreateProfileRoute, CreatorRoute, SendTipRoute, WithdrawTipRoute } from "./routes"
 import deployments from "./rollups.json";
 let rollup_address = "";
 const rollup_server: string = <string>process.env.ROLLUP_HTTP_SERVER_URL;
@@ -29,6 +29,7 @@ router.addRoute("add_creator", new CreateProfileRoute(profile, wallet))
 router.addRoute("get_creator", new CreatorRoute(profile))
 router.addRoute("get_creators", new CreatorListRoute(profile))
 router.addRoute("send_tip", new SendTipRoute(profile, wallet))
+router.addRoute("withdraw_tip", new WithdrawTipRoute(profile, wallet))
 
 const send_request = async (output: Output | Set<Output>) => {
   if (output instanceof Output) {
@@ -119,21 +120,6 @@ async function handle_advance(data: any) {
     
     try {
       const jsonpayload = JSON.parse(payloadStr);
-
-        // ERC20 transfer
-        // if (
-        //   msg_sender.toLowerCase() ===
-        //   deployments.contracts.InputBox.address.toLowerCase()
-        // ) {
-        //   try {
-        //     if(jsonpayload.method === "send_tip"){
-        //       // router.process("send_tip", payload.data)
-        //       return router.process("erc20_transfer", payload);                
-        //     }
-        //   } catch (e) {
-        //     return new Error_out(`failed ot process ERC20Transfer ${payload} ${e}`);
-        //   }
-        // }
 
       console.log("payload is");
       return router.process(jsonpayload.method, data);

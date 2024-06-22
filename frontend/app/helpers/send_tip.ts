@@ -8,14 +8,14 @@ import { parseEther } from "ethers"
   export const sendTip = async (sender: `0x${string}`, to: string, erc20: `0x${string}`, 
     amount: number, creatorId: number, signer: JsonRpcSigner, rollups: RollupsContracts, chain: Chain) => {
     const payload = {
-      "method": "erc20_transfer",
-      "args":{
-          "account": sender,
-          "to": to,
-          "erc20": erc20,
-          "amount": Number(parseUnits(amount.toString(), 18))
-      },
-      "data": {
+      "method": "send_tip",
+      // "args":{
+      //     "account": sender,
+      //     "to": to,
+      //     "erc20": erc20,
+      //     "amount": Number(parseUnits(amount.toString(), 18))
+      // },
+      "args": {
         // "to": to,
         "amount": Number(parseUnits(amount.toString(), 18)),
         "token": erc20,
