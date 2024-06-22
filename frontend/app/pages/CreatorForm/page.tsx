@@ -68,15 +68,12 @@ const CreatorForm = () => {
   return (
     <div className='min-h-screen mx-4'>
       <h1 className='text-center lg:text-2xl md:text-xl text-lg text-light-purple mt-8 lg:mt-24 md:mt-16 mb-4 font-bold '>Welcome, Create your profile 👋</h1>
-      <div className=' p-8 lg:w-1/3 md:w-1/2 w-full lg:m-auto md:m-auto border rounded  border-light-purple '>
-      <FormControl className='text-white'>
+      <div className='text-white p-8 lg:w-1/3 md:w-1/2 w-full lg:m-auto md:m-auto border rounded  border-light-purple '>
       <Input borderColor="blue.700" className='mt-2' placeholder='username' type='text' value={username} onChange={handleUsernameChange} />
       <Input borderColor="blue.700" className='mt-2' placeholder='Full name' type='text' value={fullname} onChange={handleFullnameChange} />
       <Input borderColor="blue.700" className='mt-2' placeholder='Profession' type='text' value={profession} onChange={handleProfessionChange} />
       <Textarea borderColor="blue.700" className='mt-2' placeholder='Bio'  value={bio} onChange={handleBioChange} />
       <Input borderColor="blue.700" className='mt-2' placeholder='Profile Pix' type='file'  onChange={handleProfilePixChange} />
-
-      </FormControl>
       <Button colorScheme='purple' className='mt-2 w-full' onClick={handleCreateAccount}>
         {loading ? "Creating account please wait..." : "Create Profile" }
         </Button>

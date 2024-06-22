@@ -18,21 +18,23 @@ export const getL1Balance = async (signer: JsonRpcSigner, token: `0x${string}`, 
 
 
 export const getERC20L2Balance = async ( token: `0x${string}`, sender: `0x${string}`, chain: Chain) => {
-
-  const reports = await inspectCall(
-    `balance/${sender}`,
-    chain!
-  )
-  if(reports[0].erc20.length > 0){
-    const erc20 = reports[0].erc20[0].find((item: any) => item === token)
-    console.log(erc20)
-    if(erc20){
-      console.log(reports[0].erc20[0][1])
-      return reports[0].erc20[0][1]
+  try{
+    const reports = await inspectCall(
+      `balance/${sender}`,
+      chain!
+    )
+    if(reports[0].erc20.length > 0){
+      const erc20 = reports[0].erc20[0].find((item: any) => item === token)
+      console.log(erc20)
+      if(erc20){
+        console.log(reports[0].erc20[0][1])
+        return reports[0].erc20[0][1]
+      }
+    }else {
+      console.log('Balance is zero')
+      return 0
     }
-  }else {
-    console.log('Balance is zero')
-    return 0
+  }catch(error){
+    console.log(error)
   }
-
 }

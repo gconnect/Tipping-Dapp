@@ -5,7 +5,7 @@ import { Chain } from "viem"
 import { getERC20L2Balance } from "./getBalance"
 import { parseEther } from "ethers"
 
-  export const SendTip = async (sender: `0x${string}`, to: string, erc20: `0x${string}`, 
+  export const sendTip = async (sender: `0x${string}`, to: string, erc20: `0x${string}`, 
     amount: number, creatorId: number, signer: JsonRpcSigner, rollups: RollupsContracts, chain: Chain) => {
     const payload = {
       "method": "erc20_transfer",

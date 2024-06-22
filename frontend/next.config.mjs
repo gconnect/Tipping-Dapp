@@ -3,6 +3,7 @@
 
 // export default nextConfig;
 
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
@@ -12,8 +13,9 @@ const nextConfig = {
     return config;
   },
   images: {
-    domains: ['images.unsplash.com'],
+    domains: ['images.unsplash.com', 'brown-clinical-python-573.mypinata.cloud', 'gateway.pinata.cloud'],
   },
+
 };
 
 

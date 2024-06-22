@@ -8,7 +8,7 @@ import { DAPP_ADDRESS, TEST_TOKEN } from "../utils/constants"
 import { useRollups } from "../cartesi/hooks/useRollups"
 import { useEthersSigner } from "../utils/useEtherSigner"
 import { useAccount } from "wagmi"
-import { SendTip } from "../helpers/send_tip"
+import { sendTip } from "../helpers/send_tip"
 import toast from "react-hot-toast"
 import { getERC20L2Balance } from "../helpers/getBalance"
 import { parseEther, toBigInt } from "ethers"
@@ -35,7 +35,7 @@ export const TipModal = ({ isOpen, onClose, creatorId, creatorWalletAddress, cre
     try{
       if(!amount) return errorAlert("Please enter an amount")
       setLoading(true)
-      await SendTip(address!,creatorWalletAddress, TEST_TOKEN, Number(amount), creatorId, signer!,rollups!,chain!)
+      await sendTip(address!,creatorWalletAddress, TEST_TOKEN, Number(amount), creatorId, signer!,rollups!,chain!)
       setLoading(false)
       // successAlert("Tip sent successfully")
     }catch(error){
@@ -44,9 +44,9 @@ export const TipModal = ({ isOpen, onClose, creatorId, creatorWalletAddress, cre
     }
   }
 
-  const checkBalance =async  () => {
-    await getERC20L2Balance(TEST_TOKEN, address!, chain!)
-  }
+  // const checkBalance =async  () => {
+  //   await getERC20L2Balance(TEST_TOKEN, address!, chain!)
+  // }
 
   
   return (
@@ -61,7 +61,7 @@ export const TipModal = ({ isOpen, onClose, creatorId, creatorWalletAddress, cre
             <Input borderColor="blue.700" className='mt-2' disabled placeholder='Wallet Address' type="text" value={creatorWalletAddress} />
           </ModalBody>
           <ModalFooter className="bg-blue-200 rounded-b">
-            <Button className="full" colorScheme='blue' mr={3} onClick={checkBalance}>
+            <Button className="full" colorScheme='blue' mr={3} onClick={handleSendtip}>
               {loading ? "Sending Please wait..." : "Send tip"}
             </Button>
           </ModalFooter>

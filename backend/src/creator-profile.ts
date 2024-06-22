@@ -45,6 +45,10 @@ class CreateProfile {
       fullname: string, profession: string, 
       bio: string, profilePix: string) {
       try{
+        // check if username and creator address already exist
+        if(this.creators.find((item) => item.creatorAddress === creatorAddress )) throw new Error("Creator already exist")
+        if(this.creators.find((item) => item.username === username )) throw new Error("Username already exist")
+
         const creator = new User(
           creatorAddress, 
           username, 
@@ -98,9 +102,9 @@ class CreateProfile {
         let creatorBalance = this.creators[creatorId]?.earnings!
         let supporters = this.creators[creatorId]?.contributionCount!
          // increment the creator balance 
-        creatorBalance += Number(amount)
+        creatorBalance = creatorBalance + Number(amount)
         // increment the supporter count 
-        supporters +=1
+        supporters = supporters + 1
         let tip_json = JSON.stringify(data);
         // router.process("erc20_transfer", tip_json);
         const notice_payload = `{{"type":"send_tip","content":${tip_json}}}`;

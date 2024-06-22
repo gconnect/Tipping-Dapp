@@ -31,7 +31,7 @@ import { mylocalhost } from './mylocalhost';
 
 const { wallets } = getDefaultWallets();
 
-export const config = getDefaultConfig({
+const config = getDefaultConfig({
   appName: 'RainbowKit demo',
   projectId: process.env.NEXT_PUBLIC_WALLECT_CONNECT_PROJECT_ID as string,
   wallets: [

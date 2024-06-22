@@ -9,6 +9,7 @@ import { successAlert, errorAlert } from "../utils/customAlert";
 import { DAPP_ADDRESS } from "../utils/constants";
 import { Hex } from "viem";
 import toast from "react-hot-toast";
+import { Voucher } from "./generated/graphql";
 
 export const sendAddress = async (rollups: RollupsContracts | undefined, setDappRelayedAddress: Function) => {
   if (rollups) {
@@ -99,20 +100,20 @@ export const depositErc20ToPortal = async (rollups: RollupsContracts | undefined
         // Allow portal to withdraw `amount` tokens from signer
         const tx = await tokenContract.approve(
           erc20PortalAddress,
-          parseEther(`${amount}`)
+          parseEther(amount.toString())
         );
-        const receipt = await tx.wait(1);
-        const event = (
-          await tokenContract.queryFilter(
-            tokenContract.filters.Approval(),
-            receipt?.blockHash
-          )
-        ).pop();
-        if (!event) {
-          throw Error(
-            `could not approve ${amount} tokens for DAppERC20Portal(${erc20PortalAddress})  (signer: ${signerAddress}, tx: ${receipt?.hash})`
-          );
-        }
+        // const receipt = await tx.wait(1);
+        // const event = (
+        //   await tokenContract.queryFilter(
+        //     tokenContract.filters.Approval(),
+        //     receipt?.blockHash
+        //   )
+        // ).pop();
+        // if (!event) {
+        //   throw Error(
+        //     `could not approve ${amount} tokens for DAppERC20Portal(${erc20PortalAddress})  (signer: ${signerAddress}, tx: ${receipt?.hash})`
+        //   );
+        // }
       }
 
      const deposit = await rollups.erc20PortalContract.depositERC20Tokens(
@@ -123,7 +124,7 @@ export const depositErc20ToPortal = async (rollups: RollupsContracts | undefined
       );
       // const transReceipt = await deposit.wait(1);
       // successAlert(transReceipt!.hash)
-      successAlert("Transaction successful")
+      // successAlert("Transaction successful")
       return deposit
     }
   } catch (e) {
@@ -412,25 +413,24 @@ export const transferErc1155BatchToPortal = async (
 
 export const executeVoucher = async (
   rollups: RollupsContracts | undefined, 
-  setVoucherToExecute: Function,
-  voucher: any
+  voucher: Voucher 
   ) => {
-  if (rollups && !!voucher.proof) {
+  if (rollups && voucher.proof) {
 
-      const newVoucherToExecute = {...voucher};
+      let newVoucherToExecute;
       try {
           const tx = await rollups.dappContract.executeVoucher( voucher.destination,voucher.payload,voucher.proof);
           const receipt = await tx?.wait(1);
-          newVoucherToExecute.msg = `voucher executed! (tx="${receipt?.hash}")`;
+          newVoucherToExecute = `voucher executed! (tx="${receipt?.hash}")`;
           const event = (await rollups.dappContract.queryFilter(rollups.dappContract.filters.VoucherExecuted(), receipt?.blockHash)).pop();
           if (event) {
-              newVoucherToExecute.msg = `${newVoucherToExecute.msg} - resulting events: ${JSON.stringify(receipt?.hash)}`;
-              newVoucherToExecute.executed = await rollups.dappContract.wasVoucherExecuted(toBigInt(voucher.input.index),toBigInt(voucher.index));
+              newVoucherToExecute = `${newVoucherToExecute} - resulting events: ${JSON.stringify(receipt?.hash)}`;
+              newVoucherToExecute = await rollups.dappContract.wasVoucherExecuted(toBigInt(voucher.input.index),toBigInt(voucher.index));
           }
       } catch (e) {
-          newVoucherToExecute.msg = `COULD NOT EXECUTE VOUCHER: ${JSON.stringify(e)}`;
+          newVoucherToExecute = `COULD NOT EXECUTE VOUCHER: ${JSON.stringify(e)}`;
           console.log(`COULD NOT EXECUTE VOUCHER: ${JSON.stringify(e)}`);
       }
-      setVoucherToExecute(newVoucherToExecute);
+      return newVoucherToExecute;
   }
 }

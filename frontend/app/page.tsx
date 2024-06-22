@@ -1,26 +1,34 @@
 "use client"
 import { CreatorCard } from "./component/CreatorCard"
 import { useInspectCall } from "./cartesi/hooks/useInspectCall"
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { useNotices } from "./cartesi/hooks/useNotices"
 import { useAccount } from "wagmi"
 import { ethers } from "ethers"
 import { Tikua} from "@doiim/tikua"
 import { useEthersSigner } from "./utils/useEtherSigner"
 import rollupAbi from "./cartesi/rollups.json"
-import { INSPECT_BASE_URL, DAPP_ADDRESS } from "./utils/constants"
+import { INSPECT_BASE_URL, DAPP_ADDRESS, TEST_TOKEN } from "./utils/constants"
 import { useQuery } from "@tanstack/react-query"
 import { Report } from "./cartesi/hooks/useReports"
 import { fetchCreators } from "./helpers/fetchCreators"
+import { getL1Balance } from "viem/zksync"
+import { getERC20L2Balance } from "./helpers/getBalance"
 
 const Home: React.FC = () => {
-  const { address } = useAccount()
+  const { address, chain } = useAccount()
   const [creators, setCreators] = useState([])
+  const [balance, setBalance] = useState()
+  const [creatorAddress, setCreatorAddress] = useState("")
 
   const getCreators = async () => {
     const data = await fetchCreators()
     setCreators(data)
   };
+  
+  // const l2Balance = useCallback( async () => {
+  //   await getERC20L2Balance(TEST_TOKEN, creatorAddress as `0x${string}`, chain!)
+  // },[chain, creatorAddress])
 
 
     useEffect(() => {
@@ -44,7 +52,7 @@ const Home: React.FC = () => {
           creatorAddress={item.creatorAddress}
           bio={item.bio} 
           profession={item.profession} 
-          profilePix={`https://brown-clinical-python-573.mypinata.cloud/ipfs/${item.profilePix}`} 
+          profilePix={`https://gateway.pinata.cloud/ipfs/${item.profilePix}`} 
           earnings={item.earnings} 
           contributionCount={item.contributionCount}
            />
