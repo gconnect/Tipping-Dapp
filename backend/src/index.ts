@@ -121,19 +121,19 @@ async function handle_advance(data: any) {
       const jsonpayload = JSON.parse(payloadStr);
 
         // ERC20 transfer
-        if (
-          msg_sender.toLowerCase() ===
-          deployments.contracts.InputBox.address.toLowerCase()
-        ) {
-          try {
-            if(jsonpayload.method === "send_tip"){
-              // router.process("send_tip", payload.data)
-              return router.process("erc20_transfer", payload);                
-            }
-          } catch (e) {
-            return new Error_out(`failed ot process ERC20Transfer ${payload} ${e}`);
-          }
-        }
+        // if (
+        //   msg_sender.toLowerCase() ===
+        //   deployments.contracts.InputBox.address.toLowerCase()
+        // ) {
+        //   try {
+        //     if(jsonpayload.method === "send_tip"){
+        //       // router.process("send_tip", payload.data)
+        //       return router.process("erc20_transfer", payload);                
+        //     }
+        //   } catch (e) {
+        //     return new Error_out(`failed ot process ERC20Transfer ${payload} ${e}`);
+        //   }
+        // }
 
       console.log("payload is");
       return router.process(jsonpayload.method, data);

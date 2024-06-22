@@ -1,5 +1,6 @@
-import {  Notice, Error_out, Log, Wallet } from "cartesi-wallet";
+import {  Notice, Error_out, Log, Wallet, Output } from "cartesi-wallet";
 import { Router } from "cartesi-router";
+import { getAddress } from "viem";
 const wallet = new Wallet(new Map());
 const router = new Router(wallet);
 
@@ -34,6 +35,22 @@ class User {
     this.profilePix = profilePix
     this.earnings = User.totalEarnings
     this.contributionCount = User.supporters
+    }
+
+    setContributorCount(count: number) {
+      this.contributionCount = count
+    }
+
+    getContributorCount(): number {
+      return this.contributionCount
+    }
+
+    setCreatorEarnings(earning: number) {
+      this.earnings = earning
+    }
+
+    getCreatorEarnings(): number {
+      return this.earnings
     }
 }
 class CreateProfile {
@@ -70,7 +87,7 @@ class CreateProfile {
         return new Error_out(error_msg);
         }
     }
-
+ 
     getCreator(creator_id: number){
       try{
         let creator_json = JSON.stringify(this.creators[creator_id]);
@@ -92,23 +109,48 @@ class CreateProfile {
     }
 
     sendTip(sender: string, amount: BigInt, token: `0x${string}`, creatorId: number, ){
+      let outputs = new Set<Output>();
       try{
+        // handle erc20 transfer
         const toAddress = this.creators[creatorId]?.creatorAddress as "0x"
-        // const data = wallet.erc20_transfer(sender as "0x", toAddress, token as "0x", BigInt(amount))
-        
-        const data = {
-          sender, toAddress, token, amount
+
+        let output: Output;
+        try{
+          output = wallet.erc20_transfer(
+            getAddress(sender), 
+            getAddress(toAddress), getAddress(token), 
+            BigInt(amount.toString())
+           )
+        }catch(error){
+          return new Error_out(`unable to buy a sword ${error}`);
         }
-        let creatorBalance = this.creators[creatorId]?.earnings!
-        let supporters = this.creators[creatorId]?.contributionCount!
+        if (output.type === "error") {
+          return new Error_out(output.payload);
+        }  
+        outputs.add(output)
+        // const obj = {
+        //   sender, toAddress, token, amount
+        // }
+        let creator = this.creators[creatorId]
+        let creatorBalance = creator?.getCreatorEarnings()
+        let supporters = creator?.getContributorCount()
          // increment the creator balance 
-        creatorBalance = creatorBalance + Number(amount)
+        creator?.setCreatorEarnings(creatorBalance! += Number(amount))
         // increment the supporter count 
-        supporters = supporters + 1
-        let tip_json = JSON.stringify(data);
+        creator?.setContributorCount(supporters! += 1)
+
+        //get updated balance and count
+        let updatedBalance = creator?.getCreatorEarnings() 
+        let updatedCount = creator?.getContributorCount()
+
+        // let tip_json = JSON.stringify(obj);
         // router.process("erc20_transfer", tip_json);
-        const notice_payload = `{{"type":"send_tip","content":${tip_json}}}`;
-        return new Notice(notice_payload);
+        // const notice_payload = `{{"type":"send_tip","content":${tip_json}}}`;
+        // return new Notice(notice_payload);
+        const tip_notice =  new Notice (`Creator balance increased to :
+         ${updatedBalance} and contributor count increased to : ${updatedCount}`);
+         outputs.add(tip_notice)
+         return outputs
       }catch(error){
         console.log(error)
         return new Error_out(`Unable to send tip ${error}`);
