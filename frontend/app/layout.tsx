@@ -57,7 +57,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${inter.className} bg-bcolor`}>
       <head>
-      <title>The Rock (1996)</title>
+      <title>Dtipify</title>
       {/* <meta property="og:title" content="The Rock" />
       <meta property="og:type" content="video.movie" />
       <meta property="og:url" content="https://www.imdb.com/title/tt0117500/" />

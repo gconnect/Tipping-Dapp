@@ -10,42 +10,32 @@ import {
   TableCaption,
   TableContainer,
 } from '@chakra-ui/react'
-import { finalWithraw } from '../helpers/excuteVoucher'
+import { executeVoucher, fetchData, getCreatorListVouchers } from '../helpers/excuteVoucher'
 import { useAccount } from 'wagmi'
 import { useRollups } from '../cartesi/hooks/useRollups'
 import { DAPP_ADDRESS } from '../utils/constants'
-import { errorAlert, successAlert } from '../utils/customAlert'
-import { executeVoucher } from '../helpers/excuteVoucher'
+import { errorAlert } from '../utils/customAlert'
 
 export const ListVoucher = () => {
   const [creatorVouchers,  setCreatorVouchers] = useState([])
   const [executing,  setExecuting] = useState(false)
-
+  const [executed, setExecuted] = useState(false)
   const rollups = useRollups(DAPP_ADDRESS)
 
   const { address } = useAccount()
 
   const getCreatorVouchers = useCallback(async () => {
-    await finalWithraw(address!, rollups!,setCreatorVouchers )
+  await fetchData(address as string, rollups!, setCreatorVouchers)
+  // setCreatorVouchers(data)
   },[address, rollups])
 
-  // const isExecuted = async (inputIndex: number, index: number) => {
-  //   const voucherExecuted = await rollups?.dappContract.wasVoucherExecuted(
-  //     BigInt(inputIndex),
-  //     BigInt(index)
-  //   )
-  //   console.log("status", voucherExecuted)
-  //   return voucherExecuted
-  // }
-
-  const handleExecuteVoucher = async () => {
+  const handleExecuteVoucher = async (voucher: any) => {
     try{
       setExecuting(true)
-      await finalWithraw(address!, rollups!, setCreatorVouchers)
-      // creatorVouchers.filter((voucher: any) => voucher.executed !== true).map((voucher:any, index) => 
-      //   executeVoucher(voucher.index, voucher.input.index, rollups!))
-   
+      // creatorVouchers.filter((voucher: any) => voucher.executed !== true).map((voucher, index) => executeVoucher(voucher, rollups!))
 
+      await executeVoucher(voucher, rollups!)
+      getCreatorVouchers()
       setExecuting(false)
       // successAlert()
     }catch(error){
@@ -72,15 +62,16 @@ export const ListVoucher = () => {
     </Thead>
     <Tbody>
     {creatorVouchers && creatorVouchers.map((item: any, index) => 
-       <Tr key={index}>
+        (        
+      <Tr key={index}>
        <Td>{item.index}</Td>
        <Td>{item.input.index}</Td>
-       { item.executed ?  <Td>
+       { item.execute ?  <Td>
          <Button disabled color={"grey"}>Executed</Button>
          </Td> : <Td>
-         <Button colorScheme='green' onClick={handleExecuteVoucher}>{ executing ? "Executing Voucher" :`Execute Voucher`}</Button>
+         <Button colorScheme='green' onClick={async () => await handleExecuteVoucher(item)}>{ executing ? "Executing Voucher" :`Execute Voucher`}</Button>
          </Td> }      
-      </Tr>
+      </Tr>)
     )}
     </Tbody>
   </Table>
